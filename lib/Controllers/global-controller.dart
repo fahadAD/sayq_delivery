@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 
 import '/Models/settings_model.dart';
@@ -9,7 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../Models/hubs_model.dart';
 import '../Models/profile_model.dart';
 import '../Screen/Authentication/sign_in.dart';
-import '../Services/api-list.dart';
+import '../services/api-list.dart';
 import '/services/server.dart';
 import '/services/user-service.dart';
 
@@ -20,7 +19,7 @@ class GlobalController extends GetxController {
   bool profileLoader = true;
   String? bearerToken, siteName, siteEmail, siteLogo, currencyName;
 
-   bool isUser = false;
+  bool isUser = false;
   String? userId;
   String? userImage;
   String? userName;
@@ -72,7 +71,7 @@ class GlobalController extends GetxController {
   }
 
   siteSettings() async {
-    try{
+    try {
       server.getRequestSettings(APIList.generalSettings).then((response) {
         final jsonResponse = json.decode(response.body);
         print(jsonResponse);
@@ -89,10 +88,7 @@ class GlobalController extends GetxController {
           return Container(child: Center(child: CircularProgressIndicator()));
         }
       });
-    }catch(e){
-
-    }
-
+    } catch (e) {}
   }
 
   userLogout({BuildContext? context}) async {
@@ -122,9 +118,7 @@ class GlobalController extends GetxController {
       "topic": null,
     };
     String jsonBody = json.encode(body);
-    server
-        .postRequest(endPoint: APIList.fcmUnSubscribe, body: jsonBody)
-        .then((response) {
+    server.postRequest(endPoint: APIList.fcmUnSubscribe, body: jsonBody).then((response) {
       if (response != null && response.statusCode == 200) {
         final jsonResponse = json.decode(response.body);
         print('responseBody===========>');
@@ -132,6 +126,4 @@ class GlobalController extends GetxController {
       }
     });
   }
-
-
 }

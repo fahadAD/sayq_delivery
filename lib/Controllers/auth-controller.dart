@@ -3,13 +3,13 @@ import 'dart:convert';
 import 'package:geolocator/geolocator.dart';
 
 import '../Models/register_model.dart';
-import '../Services/api-list.dart';
+import '../services/api-list.dart';
 import '/Models/login_model.dart';
 import '/Models/refresh_token_model.dart';
 import '/Screen/Home/home.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
- import '/services/server.dart';
+import '/services/server.dart';
 import '/services/user-service.dart';
 import '/services/validators.dart';
 import 'package:get/get.dart';
@@ -38,7 +38,7 @@ class AuthController extends GetxController {
 
   Position? position;
   @override
-  void onInit() async{
+  void onInit() async {
     await Geolocator.checkPermission();
     await Geolocator.requestPermission();
 
@@ -49,7 +49,6 @@ class AuthController extends GetxController {
     super.onInit();
   }
 
-
   changeVisibility() {
     obscureText = !obscureText;
     Future.delayed(const Duration(milliseconds: 10), () {
@@ -57,9 +56,7 @@ class AuthController extends GetxController {
     });
   }
 
-
-
-  loginOnTap({BuildContext? context, String? email, String? pass,String? latitude,String? longitude}) async {
+  loginOnTap({BuildContext? context, String? email, String? pass, String? latitude, String? longitude}) async {
     print('email');
     loader = true;
     Future.delayed(const Duration(milliseconds: 10), () {
@@ -68,13 +65,9 @@ class AuthController extends GetxController {
     // var emailValidator = _validators.validateEmail(value: email);
     var passValidator = _validators.validatePassword(value: pass);
     if (passValidator == null) {
-      Map body = {
-        'email': email,
-        'password': pass};
+      Map body = {'email': email, 'password': pass};
       String jsonBody = json.encode(body);
-      server
-          .postRequest(endPoint: APIList.login, body: jsonBody)
-          .then((response) {
+      server.postRequest(endPoint: APIList.login, body: jsonBody).then((response) {
         if (response != null && response.statusCode == 200) {
           updateFcmSubscribe(email);
           final jsonResponse = json.decode(response.body);
@@ -82,16 +75,11 @@ class AuthController extends GetxController {
           var bearerToken = 'Bearer ' + "${loginData.data?.token}";
           userService.saveBoolean(key: 'is-user', value: true);
           userService.saveString(key: 'token', value: loginData.data?.token);
-          userService.saveString(
-              key: 'user-id', value: loginData.data!.user?.id.toString());
-          userService.saveString(
-              key: 'email', value: loginData.data!.user!.email.toString());
-          userService.saveString(
-              key: 'image', value: loginData.data!.user!.image.toString());
-          userService.saveString(
-              key: 'name', value: loginData.data!.user!.name.toString());
-          userService.saveString(
-              key: 'phone', value: loginData.data!.user!.phone.toString());
+          userService.saveString(key: 'user-id', value: loginData.data!.user?.id.toString());
+          userService.saveString(key: 'email', value: loginData.data!.user!.email.toString());
+          userService.saveString(key: 'image', value: loginData.data!.user!.image.toString());
+          userService.saveString(key: 'name', value: loginData.data!.user!.name.toString());
+          userService.saveString(key: 'phone', value: loginData.data!.user!.phone.toString());
 
           Server.initClass(token: bearerToken);
           Get.put(GlobalController()).initController();
@@ -102,21 +90,14 @@ class AuthController extends GetxController {
             update();
           });
           Get.off(() => const Home());
-          Get.rawSnackbar(
-              message: "${loginData.message}",
-              backgroundColor: Colors.green,
-              snackPosition: SnackPosition.TOP);
-
+          Get.rawSnackbar(message: "${loginData.message}", backgroundColor: Colors.green, snackPosition: SnackPosition.TOP);
         } else {
           loader = false;
           Future.delayed(const Duration(milliseconds: 10), () {
             update();
           });
           final jsonResponse = json.decode(response.body);
-          Get.rawSnackbar(
-              message: "${jsonResponse['message']}",
-              backgroundColor: Colors.red,
-              snackPosition: SnackPosition.TOP);
+          Get.rawSnackbar(message: "${jsonResponse['message']}", backgroundColor: Colors.red, snackPosition: SnackPosition.TOP);
         }
       });
     } else {
@@ -135,21 +116,17 @@ class AuthController extends GetxController {
     });
 
     Map body = {
-       'full_name': firstNameController.text +' '+ lastNameController.text,
-       'address': addressController.text,
-       'email': emailController.text,
-       'mobile': phoneController.text,
-       'password': passwordController.text,
-       'latitude': position?.latitude,
-       'longitude': position?.longitude,
-
-
+      'full_name': firstNameController.text + ' ' + lastNameController.text,
+      'address': addressController.text,
+      'email': emailController.text,
+      'mobile': phoneController.text,
+      'password': passwordController.text,
+      'latitude': position?.latitude,
+      'longitude': position?.longitude,
     };
     String jsonBody = json.encode(body);
     print(jsonBody);
-    server
-        .postRequest(endPoint: APIList.signup, body: jsonBody)
-        .then((response) {
+    server.postRequest(endPoint: APIList.signup, body: jsonBody).then((response) {
       print("under ${response}");
       print("under ${response.statusCode}");
       print("under${response.body}");
@@ -160,30 +137,25 @@ class AuthController extends GetxController {
         final jsonResponse = json.decode(response.body);
         print(jsonResponse);
         var regData = RegisterModel.fromJson(jsonResponse);
-        if(regData.success!){
+        if (regData.success!) {
           Get.off(() => const Home());
-          Get.rawSnackbar(
-              message: "${regData.message}",
-              backgroundColor: Colors.green,
-              snackPosition: SnackPosition.TOP);
+          Get.rawSnackbar(message: "${regData.message}", backgroundColor: Colors.green, snackPosition: SnackPosition.TOP);
 
           firstNameController.clear();
           lastNameController.clear();
           phoneController.clear();
           passwordController.clear();
           emailController.clear();
-
         }
         loader = false;
         Future.delayed(Duration(milliseconds: 10), () {
           update();
         });
-      }else if (response != null && response.statusCode == 422) {
+      } else if (response != null && response.statusCode == 422) {
         final jsonResponse = json.decode(response.body);
         print(jsonResponse);
         if (jsonResponse['data']['message']['mobile'] != null) {
-          Get.rawSnackbar(message: jsonResponse['data']['message']['mobile'].toString(),backgroundColor: Colors.red,
-              snackPosition: SnackPosition.TOP);
+          Get.rawSnackbar(message: jsonResponse['data']['message']['mobile'].toString(), backgroundColor: Colors.red, snackPosition: SnackPosition.TOP);
         }
         loader = false;
         Future.delayed(Duration(milliseconds: 10), () {
@@ -199,12 +171,11 @@ class AuthController extends GetxController {
     });
   }
 
-
   refreshToken(context) async {
     server.getRequest(endPoint: APIList.refreshToken).then((response) {
       print(response);
       if (response != null && response.statusCode == 200) {
-        try{
+        try {
           final jsonResponse = json.decode(response.body);
           var refreshData = RefreshTokenModel.fromJson(jsonResponse);
           print(refreshData);
@@ -215,78 +186,60 @@ class AuthController extends GetxController {
           Get.put(GlobalController()).initController();
           Get.off(() => const Home());
           return true;
-        }catch(e){
-          Get.find<GlobalController>().userLogout(context:context );
+        } catch (e) {
+          Get.find<GlobalController>().userLogout(context: context);
         }
-
       } else {
-        Get.find<GlobalController>().userLogout(context:context );
+        Get.find<GlobalController>().userLogout(context: context);
         return false;
       }
     });
   }
-
 
   otpVerification(mobile) async {
     loader = true;
     Future.delayed(const Duration(milliseconds: 10), () {
       update();
     });
-      Map body = {'otp': '${otp1.text.toString()+otp2.text.toString()+otp3.text.toString()+otp4.text.toString()+otp5.text.toString()}', 'mobile': mobile};
-      String jsonBody = json.encode(body);
-      print(jsonBody);
-      server
-          .postRequest(endPoint: APIList.verifyOtp, body: jsonBody)
-          .then((response) {
-        if (response != null && response.statusCode == 200) {
-          final jsonResponse = json.decode(response.body);
-          var loginData = LoginModel.fromJson(jsonResponse);
-          var bearerToken = 'Bearer ' + "${loginData.data?.token}";
-          userService.saveBoolean(key: 'is-user', value: true);
-          userService.saveString(key: 'token', value: loginData.data?.token);
-          userService.saveString(
-              key: 'user-id', value: loginData.data!.user?.id.toString());
-          userService.saveString(
-              key: 'email', value: loginData.data!.user!.email.toString());
-          userService.saveString(
-              key: 'image', value: loginData.data!.user!.image.toString());
-          userService.saveString(
-              key: 'name', value: loginData.data!.user!.name.toString());
-          userService.saveString(
-              key: 'phone', value: loginData.data!.user!.phone.toString());
+    Map body = {'otp': '${otp1.text.toString() + otp2.text.toString() + otp3.text.toString() + otp4.text.toString() + otp5.text.toString()}', 'mobile': mobile};
+    String jsonBody = json.encode(body);
+    print(jsonBody);
+    server.postRequest(endPoint: APIList.verifyOtp, body: jsonBody).then((response) {
+      if (response != null && response.statusCode == 200) {
+        final jsonResponse = json.decode(response.body);
+        var loginData = LoginModel.fromJson(jsonResponse);
+        var bearerToken = 'Bearer ' + "${loginData.data?.token}";
+        userService.saveBoolean(key: 'is-user', value: true);
+        userService.saveString(key: 'token', value: loginData.data?.token);
+        userService.saveString(key: 'user-id', value: loginData.data!.user?.id.toString());
+        userService.saveString(key: 'email', value: loginData.data!.user!.email.toString());
+        userService.saveString(key: 'image', value: loginData.data!.user!.image.toString());
+        userService.saveString(key: 'name', value: loginData.data!.user!.name.toString());
+        userService.saveString(key: 'phone', value: loginData.data!.user!.phone.toString());
 
-          Server.initClass(token: bearerToken);
-          Get.put(GlobalController()).initController();
-          otp1.clear();
-          otp2.clear();
-          otp3.clear();
-          otp4.clear();
-          otp5.clear();
-          loader = false;
-          Future.delayed(const Duration(milliseconds: 10), () {
-            update();
-          });
-          Get.off(() => const Home());
-          Get.rawSnackbar(
-              message: "${loginData.message}",
-              backgroundColor: Colors.green,
-              snackPosition: SnackPosition.TOP);
-
-        } else {
-          loader = false;
-          Future.delayed(const Duration(milliseconds: 10), () {
-            update();
-          });
-          final jsonResponse = json.decode(response.body);
-          Get.rawSnackbar(
-              message: "${jsonResponse['message']}",
-              backgroundColor: Colors.red,
-              snackPosition: SnackPosition.TOP);
-        }
-      });
-
-    }
-
+        Server.initClass(token: bearerToken);
+        Get.put(GlobalController()).initController();
+        otp1.clear();
+        otp2.clear();
+        otp3.clear();
+        otp4.clear();
+        otp5.clear();
+        loader = false;
+        Future.delayed(const Duration(milliseconds: 10), () {
+          update();
+        });
+        Get.off(() => const Home());
+        Get.rawSnackbar(message: "${loginData.message}", backgroundColor: Colors.green, snackPosition: SnackPosition.TOP);
+      } else {
+        loader = false;
+        Future.delayed(const Duration(milliseconds: 10), () {
+          update();
+        });
+        final jsonResponse = json.decode(response.body);
+        Get.rawSnackbar(message: "${jsonResponse['message']}", backgroundColor: Colors.red, snackPosition: SnackPosition.TOP);
+      }
+    });
+  }
 
   updateFcmSubscribe(email) async {
     SharedPreferences storage = await SharedPreferences.getInstance();
@@ -296,9 +249,7 @@ class AuthController extends GetxController {
       "topic": email,
     };
     String jsonBody = json.encode(body);
-    server
-        .postRequest(endPoint: APIList.fcmSubscribe, body: jsonBody)
-        .then((response) {
+    server.postRequest(endPoint: APIList.fcmSubscribe, body: jsonBody).then((response) {
       if (response != null && response.statusCode == 200) {
         final jsonResponse = json.decode(response.body);
         print('responseBody===========>');
@@ -306,7 +257,4 @@ class AuthController extends GetxController {
       }
     });
   }
-
 }
-
-
