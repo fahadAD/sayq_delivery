@@ -9,16 +9,18 @@ import 'package:get/get.dart';
 class DashboardController extends GetxController {
   UserService userService = UserService();
   Server server = Server();
-  List<Delivered> deliveredList = <Delivered>[];
-  List<DeliverymanReSchedule> deliverymanReScheduleList = <DeliverymanReSchedule>[];
-  List<DeliverymanAssign> deliverymanAssignList = <DeliverymanAssign>[];
-  List<ReturnToCourier> returnToCourierList = <ReturnToCourier>[];
+  List<ParcelModel> deliveredList = <ParcelModel>[].obs;
+  List<ParcelModel> requestList = <ParcelModel>[].obs;
+  List<ParcelModel> deliverymanReScheduleList = <ParcelModel>[].obs;
+  List<ParcelModel> deliverymanAssignList = <ParcelModel>[].obs;
+  List<ParcelModel> returnToCourierList = <ParcelModel>[].obs;
   final TextEditingController cashController = TextEditingController();
   final TextEditingController noteController = TextEditingController();
 
   String? statusID = '9';
+  String? collectStatusID = '2';
   String? userID;
-  bool dashboardLoader = true;
+  RxBool dashboardLoader = false.obs;
   bool commonLoader = false;
   bool loader = false;
   late DataDashboard dashboardData;
@@ -29,31 +31,33 @@ class DashboardController extends GetxController {
     super.onInit();
   }
 
-  getDashboard() {
-    deliveredList = <Delivered>[];
-    deliverymanReScheduleList = <DeliverymanReSchedule>[];
-    deliverymanAssignList = <DeliverymanAssign>[];
-    returnToCourierList = <ReturnToCourier>[];
-    server.getRequest(endPoint: APIList.dashboard).then((response) {
-      if (response != null && response.statusCode == 200) {
-        dashboardLoader = false;
-        final jsonResponse = json.decode(response.body);
-        var dashboard = DashboardModel.fromJson(jsonResponse);
-        dashboardData = dashboard.data!;
-        deliveredList.addAll(dashboard.data!.delivered!);
-        deliverymanReScheduleList.addAll(dashboard.data!.deliverymanReSchedule!);
-        deliverymanAssignList.addAll(dashboard.data!.deliverymanAssign!);
-        returnToCourierList.addAll(dashboard.data!.returnToCourier!);
-        update();
-      } else {
-        dashboardLoader = false;
-        update();
-      }
-    });
+  getDashboard() async {
+    deliveredList = <ParcelModel>[];
+    deliverymanReScheduleList = <ParcelModel>[];
+    deliverymanAssignList = <ParcelModel>[];
+    returnToCourierList = <ParcelModel>[];
+    requestList = <ParcelModel>[];
+    dashboardLoader.value = true;
+    var response = await server.getRequest(endPoint: APIList.dashboard);
+    if (response != null && response.statusCode == 200) {
+      dashboardLoader.value = false;
+      final jsonResponse = json.decode(response.body);
+      var dashboard = DashboardModel.fromJson(jsonResponse);
+      dashboardData = dashboard.data!;
+      deliveredList.addAll(dashboard.data!.delivered!);
+      requestList.addAll(dashboard.data!.parcelRequest!);
+      deliverymanReScheduleList.addAll(dashboard.data!.deliverymanReSchedule!);
+      deliverymanAssignList.addAll(dashboard.data!.deliverymanAssign!);
+      returnToCourierList.addAll(dashboard.data!.returnToCourier!);
+      update();
+    } else {
+      dashboardLoader.value = false;
+      update();
+    }
   }
 
-  changeStatus(context,parcelId,pickedSignatureImage,image) {
-    dashboardLoader = true;
+  changeStatus(context, parcelId, pickedSignatureImage, image) async {
+    dashboardLoader.value = true;
     print(pickedSignatureImage);
     print(image);
     update();
@@ -66,48 +70,77 @@ class DashboardController extends GetxController {
 
     print("bodys=======${body}");
 
-    try{
-      server.multipartFileRequest(
-          endPoint: APIList.changeStatus,
-          body: body,
-          filepath: image,
-          pickedSignatureImage: pickedSignatureImage,
-          type: true)
-          .then((response) {
+    try {
+      var response = await server.multipartFileRequest(endPoint: APIList.changeStatus, body: body, filepath: image, pickedSignatureImage: pickedSignatureImage, type: true);
+      print("======fahad====${response}+++++++++++++");
+      // print("=====fahad=====${response.statusCode}+++++++++++++++");
+      //print("====fahad======${response.body}+++++++++++");
 
-        print("======fahad====${response}+++++++++++++");
-        print("=====fahad=====${response.statusCode}+++++++++++++++");
-        print("====fahad======${response.body}+++++++++++");
-        if (response != null) {
-          var data = jsonDecode(response.body);
+      if (response != null) {
+        var data = jsonDecode(response.body);
 
-          print("=====datasdddd=====${data}+++++++++++++");
+        print("=====datasdddd=====${data}+++++++++++++");
 
-          print("=====r=====${response}+++++++++++++");
-          print("====r======${response.statusCode}+++++++++++++++");
-          print("====r======${response.body}+++++++++++");
-
-          getDashboard();
-          Get.rawSnackbar(
-            snackPosition: SnackPosition.TOP,
-            title: 'Change Status',
-            message: 'Status Successfully',
-            backgroundColor:CupertinoColors.activeGreen.withOpacity(.9),
-            margin: const EdgeInsets.only(bottom: 20, left: 20, right: 20),
-          );
-          dashboardLoader = false;
-          update();
-        } else {
-          dashboardLoader = false;
-          update();
-        }
-      });
-    }catch(e)
-    {
+        await getDashboard();
+        Get.rawSnackbar(
+          snackPosition: SnackPosition.TOP,
+          title: 'Change Status',
+          message: 'Status Successfully',
+          backgroundColor: CupertinoColors.activeGreen.withOpacity(.9),
+          margin: const EdgeInsets.only(bottom: 20, left: 20, right: 20),
+        );
+        dashboardLoader.value = false;
+        update();
+      } else {
+        dashboardLoader.value = false;
+        update();
+      }
+    } catch (e) {
       Get.log(e.toString());
-      dashboardLoader = false;
+      dashboardLoader.value = false;
       update();
     }
+  }
 
+  changeStatusWithOutSignature({
+    context,
+    statusID,
+    parcelId,
+  }) async {
+    dashboardLoader.value = true;
+
+    update();
+    Map<String, String> body = {
+      'parcel_id': parcelId,
+      'status_action': collectStatusID!,
+      'note': noteController.text,
+    };
+    String jsonbody = jsonEncode(body);
+    print(body);
+    try {
+      var response = await server.postRequestWithToken(endPoint: APIList.changeStatus, body: jsonbody);
+      print(response.statusCode);
+      print("======fahad====${response}+++++++++++++");
+      print("=====fahad=====${response.statusCode}+++++++++++++++");
+      print("====fahad======${response.body}+++++++++++");
+      if (response.statusCode == 200) {
+        await getDashboard();
+        Get.rawSnackbar(
+          snackPosition: SnackPosition.TOP,
+          title: 'Change Status',
+          message: 'Status Successfully',
+          backgroundColor: CupertinoColors.activeGreen.withOpacity(.9),
+          margin: const EdgeInsets.only(bottom: 20, left: 20, right: 20),
+        );
+        dashboardLoader.value = false;
+      } else {
+        dashboardLoader.value = false;
+        update();
+      }
+    } catch (e) {
+      Get.log(e.toString());
+      dashboardLoader.value = false;
+      update();
+    }
   }
 }

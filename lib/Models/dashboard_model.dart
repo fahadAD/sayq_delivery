@@ -1,791 +1,219 @@
 class DashboardModel {
-  DashboardModel({
-      bool? success, 
-      String? message, 
-      DataDashboard? data,}){
-    _success = success;
-    _message = message;
-    _data = data;
-}
+  bool? success;
+  String? message;
+  DataDashboard? data;
 
-  DashboardModel.fromJson(dynamic json) {
-    _success = json['success'];
-    _message = json['message'];
-    _data = json['data'] != null ? DataDashboard.fromJson(json['data']) : null;
+  DashboardModel({this.success, this.message, this.data});
+
+  DashboardModel.fromJson(Map<String, dynamic> json) {
+    success = json['success'];
+    message = json['message'];
+    data = json['data'] != null ? new DataDashboard.fromJson(json['data']) : null;
   }
-  bool? _success;
-  String? _message;
-  DataDashboard? _data;
-
-  bool? get success => _success;
-  String? get message => _message;
-  DataDashboard? get data => _data;
 
   Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['success'] = _success;
-    map['message'] = _message;
-    if (_data != null) {
-      map['data'] = _data?.toJson();
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['success'] = this.success;
+    data['message'] = this.message;
+    if (this.data != null) {
+      data['data'] = this.data!.toJson();
     }
-    return map;
+    return data;
   }
-
 }
 
 class DataDashboard {
-  DataDashboard({
-      List<DeliverymanAssign>? deliverymanAssign, 
-      List<DeliverymanReSchedule>? deliverymanReSchedule, 
-      List<ReturnToCourier>? returnToCourier,
-      List<Delivered>? delivered,}){
-    _deliverymanAssign = deliverymanAssign;
-    _deliverymanReSchedule = deliverymanReSchedule;
-    _returnToCourier = returnToCourier;
-    _delivered = delivered;
-}
+  List<ParcelModel>? parcelRequest;
+  List<ParcelModel>? deliverymanAssign;
+  List<ParcelModel>? deliverymanReSchedule;
+  List<ParcelModel>? returnToCourier;
+  List<ParcelModel>? delivered;
 
-  DataDashboard.fromJson(dynamic json) {
+  DataDashboard({this.parcelRequest, this.deliverymanAssign, this.deliverymanReSchedule, this.returnToCourier, this.delivered});
+
+  DataDashboard.fromJson(Map<String, dynamic> json) {
+    if (json['parcel_request'] != null) {
+      parcelRequest = <ParcelModel>[];
+      json['parcel_request'].forEach((v) {
+        parcelRequest!.add(new ParcelModel.fromJson(v));
+      });
+    }
     if (json['deliveryman_assign'] != null) {
-      _deliverymanAssign = [];
+      deliverymanAssign = <ParcelModel>[];
       json['deliveryman_assign'].forEach((v) {
-        _deliverymanAssign?.add(DeliverymanAssign.fromJson(v));
+        deliverymanAssign!.add(new ParcelModel.fromJson(v));
       });
     }
     if (json['deliveryman_re_schedule'] != null) {
-      _deliverymanReSchedule = [];
+      deliverymanReSchedule = <ParcelModel>[];
       json['deliveryman_re_schedule'].forEach((v) {
-        _deliverymanReSchedule?.add(DeliverymanReSchedule.fromJson(v));
+        deliverymanReSchedule!.add(new ParcelModel.fromJson(v));
       });
     }
     if (json['return_to_courier'] != null) {
-      _returnToCourier = [];
+      returnToCourier = <ParcelModel>[];
       json['return_to_courier'].forEach((v) {
-        _returnToCourier?.add(ReturnToCourier.fromJson(v));
+        returnToCourier!.add(new ParcelModel.fromJson(v));
       });
     }
     if (json['delivered'] != null) {
-      _delivered = [];
+      delivered = <ParcelModel>[];
       json['delivered'].forEach((v) {
-        _delivered?.add(Delivered.fromJson(v));
+        delivered!.add(new ParcelModel.fromJson(v));
       });
     }
   }
-  List<DeliverymanAssign>? _deliverymanAssign;
-  List<DeliverymanReSchedule>? _deliverymanReSchedule;
-  List<ReturnToCourier>? _returnToCourier;
-  List<Delivered>? _delivered;
-
-  List<DeliverymanAssign>? get deliverymanAssign => _deliverymanAssign;
-  List<DeliverymanReSchedule>? get deliverymanReSchedule => _deliverymanReSchedule;
-  List<ReturnToCourier>? get returnToCourier => _returnToCourier;
-  List<Delivered>? get delivered => _delivered;
 
   Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    if (_deliverymanAssign != null) {
-      map['deliveryman_assign'] = _deliverymanAssign?.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    if (this.parcelRequest != null) {
+      data['parcel_request'] = this.parcelRequest!.map((v) => v.toJson()).toList();
     }
-    if (_deliverymanReSchedule != null) {
-      map['deliveryman_re_schedule'] = _deliverymanReSchedule?.map((v) => v.toJson()).toList();
+    if (this.deliverymanAssign != null) {
+      data['deliveryman_assign'] = this.deliverymanAssign!.map((v) => v.toJson()).toList();
     }
-    if (_returnToCourier != null) {
-      map['return_to_courier'] = _returnToCourier?.map((v) => v.toJson()).toList();
+    if (this.deliverymanReSchedule != null) {
+      data['deliveryman_re_schedule'] = this.deliverymanReSchedule!.map((v) => v.toJson()).toList();
     }
-    if (_delivered != null) {
-      map['delivered'] = _delivered?.map((v) => v.toJson()).toList();
+    if (this.returnToCourier != null) {
+      data['return_to_courier'] = this.returnToCourier!.map((v) => v.toJson()).toList();
     }
-    return map;
+    if (this.delivered != null) {
+      data['delivered'] = this.delivered!.map((v) => v.toJson()).toList();
+    }
+    return data;
   }
-
 }
 
-class Delivered {
-  Delivered({
-      int? id, 
-      String? trackingId, 
-      int? merchantId, 
-      String? merchantName, 
-      String? merchantUserName, 
-      String? merchantUserEmail, 
-      String? merchantMobile, 
-      String? merchantAddress, 
-      String? customerName, 
-      String? customerPhone, 
-      String? customerAddress, 
-      String? totalDeliveryAmount, 
-      String? vatAmount, 
-      String? currentPayable, 
-      String? cashCollection, 
-      int? deliveryTypeId, 
-      String? deliveryType, 
-      int? status, 
-      String? statusName, 
-      String? note,
-      String? pickupDate,
-      String? deliveryDate, 
-      String? createdAt, 
-      String? updatedAt, 
-      String? parcelDate, 
-      String? parcelTime,}){
-    _id = id;
-    _trackingId = trackingId;
-    _merchantId = merchantId;
-    _merchantName = merchantName;
-    _merchantUserName = merchantUserName;
-    _merchantUserEmail = merchantUserEmail;
-    _merchantMobile = merchantMobile;
-    _merchantAddress = merchantAddress;
-    _customerName = customerName;
-    _customerPhone = customerPhone;
-    _customerAddress = customerAddress;
-    _totalDeliveryAmount = totalDeliveryAmount;
-    _vatAmount = vatAmount;
-    _currentPayable = currentPayable;
-    _cashCollection = cashCollection;
-    _deliveryTypeId = deliveryTypeId;
-    _deliveryType = deliveryType;
-    _status = status;
-    _statusName = statusName;
-    _note = note;
-    _pickupDate = pickupDate;
-    _deliveryDate = deliveryDate;
-    _createdAt = createdAt;
-    _updatedAt = updatedAt;
-    _parcelDate = parcelDate;
-    _parcelTime = parcelTime;
-}
+class ParcelModel {
+  int? id;
+  String? trackingId;
+  int? merchantId;
+  String? merchantName;
+  String? merchantUserName;
+  String? merchantUserEmail;
+  String? merchantMobile;
+  String? merchantAddress;
+  String? customerName;
+  String? customerPhone;
+  String? customerAddress;
+  String? note;
+  String? invoiceNo;
+  String? weight;
+  String? totalDeliveryAmount;
+  String? codAmount;
+  String? vatAmount;
+  String? currentPayable;
+  String? cashCollection;
+  int? deliveryTypeId;
+  String? deliveryType;
+  int? status;
+  dynamic priorityTypeId;
+  String? statusName;
+  String? pickupDate;
+  String? deliveryDate;
+  String? createdAt;
+  String? updatedAt;
+  String? parcelDate;
+  String? parcelTime;
 
-  Delivered.fromJson(dynamic json) {
-    _id = json['id'];
-    _trackingId = json['tracking_id'];
-    _merchantId = int.parse(json['merchant_id'].toString());
-    _merchantName = json['merchant_name'];
-    _merchantUserName = json['merchant_user_name'];
-    _merchantUserEmail = json['merchant_user_email'];
-    _merchantMobile = json['merchant_mobile'];
-    _merchantAddress = json['merchant_address'];
-    _customerName = json['customer_name'];
-    _customerPhone = json['customer_phone'];
-    _customerAddress = json['customer_address'];
-    _totalDeliveryAmount = json['total_delivery_amount'];
-    _vatAmount = json['vat_amount'];
-    _currentPayable = json['current_payable'];
-    _cashCollection = json['cash_collection'];
-    _deliveryTypeId = int.parse(json['delivery_type_id'].toString());
-    _deliveryType = json['deliveryType'];
-    _status = int.parse(json['status'].toString());
-    _statusName = json['statusName'];
-    _note = json['note'];
-    _pickupDate = json['pickup_date'];
-    _deliveryDate = json['delivery_date'];
-    _createdAt = json['created_at'];
-    _updatedAt = json['updated_at'];
-    _parcelDate = json['parcel_date'];
-    _parcelTime = json['parcel_time'];
+  ParcelModel(
+      {this.id,
+      this.trackingId,
+      this.merchantId,
+      this.merchantName,
+      this.merchantUserName,
+      this.merchantUserEmail,
+      this.merchantMobile,
+      this.merchantAddress,
+      this.customerName,
+      this.customerPhone,
+      this.customerAddress,
+      this.note,
+      this.invoiceNo,
+      this.weight,
+      this.totalDeliveryAmount,
+      this.codAmount,
+      this.vatAmount,
+      this.currentPayable,
+      this.cashCollection,
+      this.deliveryTypeId,
+      this.deliveryType,
+      this.status,
+      this.priorityTypeId,
+      this.statusName,
+      this.pickupDate,
+      this.deliveryDate,
+      this.createdAt,
+      this.updatedAt,
+      this.parcelDate,
+      this.parcelTime});
+
+  ParcelModel.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    trackingId = json['tracking_id'];
+    merchantId = json['merchant_id'];
+    merchantName = json['merchant_name'];
+    merchantUserName = json['merchant_user_name'];
+    merchantUserEmail = json['merchant_user_email'];
+    merchantMobile = json['merchant_mobile'];
+    merchantAddress = json['merchant_address'];
+    customerName = json['customer_name'];
+    customerPhone = json['customer_phone'];
+    customerAddress = json['customer_address'];
+    note = json['note'];
+    invoiceNo = json['invoice_no'];
+    weight = json['weight'];
+    totalDeliveryAmount = json['total_delivery_amount'];
+    codAmount = json['cod_amount'];
+    vatAmount = json['vat_amount'];
+    currentPayable = json['current_payable'];
+    cashCollection = json['cash_collection'];
+    deliveryTypeId = json['delivery_type_id'];
+    deliveryType = json['deliveryType'];
+    status = json['status'];
+    priorityTypeId = json['priority_type_id'];
+    statusName = json['statusName'];
+    pickupDate = json['pickup_date'];
+    deliveryDate = json['delivery_date'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+    parcelDate = json['parcel_date'];
+    parcelTime = json['parcel_time'];
   }
-  int? _id;
-  String? _trackingId;
-  int? _merchantId;
-  String? _merchantName;
-  String? _merchantUserName;
-  String? _merchantUserEmail;
-  String? _merchantMobile;
-  String? _merchantAddress;
-  String? _customerName;
-  String? _customerPhone;
-  String? _customerAddress;
-  String? _totalDeliveryAmount;
-  String? _vatAmount;
-  String? _currentPayable;
-  String? _cashCollection;
-  int? _deliveryTypeId;
-  String? _deliveryType;
-  int? _status;
-  String? _statusName;
-  String? _note;
-  String? _pickupDate;
-  String? _deliveryDate;
-  String? _createdAt;
-  String? _updatedAt;
-  String? _parcelDate;
-  String? _parcelTime;
-
-  int? get id => _id;
-  String? get trackingId => _trackingId;
-  int? get merchantId => _merchantId;
-  String? get merchantName => _merchantName;
-  String? get merchantUserName => _merchantUserName;
-  String? get merchantUserEmail => _merchantUserEmail;
-  String? get merchantMobile => _merchantMobile;
-  String? get merchantAddress => _merchantAddress;
-  String? get customerName => _customerName;
-  String? get customerPhone => _customerPhone;
-  String? get customerAddress => _customerAddress;
-  String? get totalDeliveryAmount => _totalDeliveryAmount;
-  String? get vatAmount => _vatAmount;
-  String? get currentPayable => _currentPayable;
-  String? get cashCollection => _cashCollection;
-  int? get deliveryTypeId => _deliveryTypeId;
-  String? get deliveryType => _deliveryType;
-  int? get status => _status;
-  String? get statusName => _statusName;
-  String? get  note => _note;
-  String? get pickupDate => _pickupDate;
-  String? get deliveryDate => _deliveryDate;
-  String? get createdAt => _createdAt;
-  String? get updatedAt => _updatedAt;
-  String? get parcelDate => _parcelDate;
-  String? get parcelTime => _parcelTime;
 
   Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['id'] = _id;
-    map['tracking_id'] = _trackingId;
-    map['merchant_id'] = _merchantId;
-    map['merchant_name'] = _merchantName;
-    map['merchant_user_name'] = _merchantUserName;
-    map['merchant_user_email'] = _merchantUserEmail;
-    map['merchant_mobile'] = _merchantMobile;
-    map['merchant_address'] = _merchantAddress;
-    map['customer_name'] = _customerName;
-    map['customer_phone'] = _customerPhone;
-    map['customer_address'] = _customerAddress;
-    map['total_delivery_amount'] = _totalDeliveryAmount;
-    map['vat_amount'] = _vatAmount;
-    map['current_payable'] = _currentPayable;
-    map['cash_collection'] = _cashCollection;
-    map['delivery_type_id'] = _deliveryTypeId;
-    map['deliveryType'] = _deliveryType;
-    map['status'] = _status;
-    map['statusName'] = _statusName;
-    map['note'] = _note;
-    map['pickup_date'] = _pickupDate;
-    map['delivery_date'] = _deliveryDate;
-    map['created_at'] = _createdAt;
-    map['updated_at'] = _updatedAt;
-    map['parcel_date'] = _parcelDate;
-    map['parcel_time'] = _parcelTime;
-    return map;
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['tracking_id'] = this.trackingId;
+    data['merchant_id'] = this.merchantId;
+    data['merchant_name'] = this.merchantName;
+    data['merchant_user_name'] = this.merchantUserName;
+    data['merchant_user_email'] = this.merchantUserEmail;
+    data['merchant_mobile'] = this.merchantMobile;
+    data['merchant_address'] = this.merchantAddress;
+    data['customer_name'] = this.customerName;
+    data['customer_phone'] = this.customerPhone;
+    data['customer_address'] = this.customerAddress;
+    data['note'] = this.note;
+    data['invoice_no'] = this.invoiceNo;
+    data['weight'] = this.weight;
+    data['total_delivery_amount'] = this.totalDeliveryAmount;
+    data['cod_amount'] = this.codAmount;
+    data['vat_amount'] = this.vatAmount;
+    data['current_payable'] = this.currentPayable;
+    data['cash_collection'] = this.cashCollection;
+    data['delivery_type_id'] = this.deliveryTypeId;
+    data['deliveryType'] = this.deliveryType;
+    data['status'] = this.status;
+    data['priority_type_id'] = this.priorityTypeId;
+    data['statusName'] = this.statusName;
+    data['pickup_date'] = this.pickupDate;
+    data['delivery_date'] = this.deliveryDate;
+    data['created_at'] = this.createdAt;
+    data['updated_at'] = this.updatedAt;
+    data['parcel_date'] = this.parcelDate;
+    data['parcel_time'] = this.parcelTime;
+    return data;
   }
-
-}
-
-class DeliverymanReSchedule {
-  DeliverymanReSchedule({
-      int? id, 
-      String? trackingId, 
-      int? merchantId, 
-      String? merchantName, 
-      String? merchantUserName, 
-      String? merchantUserEmail, 
-      String? merchantMobile, 
-      String? merchantAddress, 
-      String? customerName, 
-      String? customerPhone, 
-      String? customerAddress, 
-      String? totalDeliveryAmount, 
-      String? vatAmount, 
-      String? currentPayable, 
-      String? cashCollection, 
-      int? deliveryTypeId, 
-      String? deliveryType, 
-      int? status, 
-      String? statusName,
-      String? note,
-      String? pickupDate, 
-      String? deliveryDate, 
-      String? createdAt, 
-      String? updatedAt, 
-      String? parcelDate, 
-      String? parcelTime,}){
-    _id = id;
-    _trackingId = trackingId;
-    _merchantId = merchantId;
-    _merchantName = merchantName;
-    _merchantUserName = merchantUserName;
-    _merchantUserEmail = merchantUserEmail;
-    _merchantMobile = merchantMobile;
-    _merchantAddress = merchantAddress;
-    _customerName = customerName;
-    _customerPhone = customerPhone;
-    _customerAddress = customerAddress;
-    _totalDeliveryAmount = totalDeliveryAmount;
-    _vatAmount = vatAmount;
-    _currentPayable = currentPayable;
-    _cashCollection = cashCollection;
-    _deliveryTypeId = deliveryTypeId;
-    _deliveryType = deliveryType;
-    _status = status;
-    _statusName = statusName;
-    _note = note;
-    _pickupDate = pickupDate;
-    _deliveryDate = deliveryDate;
-    _createdAt = createdAt;
-    _updatedAt = updatedAt;
-    _parcelDate = parcelDate;
-    _parcelTime = parcelTime;
-}
-
-  DeliverymanReSchedule.fromJson(dynamic json) {
-    _id = json['id'];
-    _trackingId = json['tracking_id'];
-    _merchantId = int.parse(json['merchant_id'].toString());
-    _merchantName = json['merchant_name'];
-    _merchantUserName = json['merchant_user_name'];
-    _merchantUserEmail = json['merchant_user_email'];
-    _merchantMobile = json['merchant_mobile'];
-    _merchantAddress = json['merchant_address'];
-    _customerName = json['customer_name'];
-    _customerPhone = json['customer_phone'];
-    _customerAddress = json['customer_address'];
-    _totalDeliveryAmount = json['total_delivery_amount'];
-    _vatAmount = json['vat_amount'];
-    _currentPayable = json['current_payable'];
-    _cashCollection = json['cash_collection'];
-    _deliveryTypeId = int.parse(json['delivery_type_id'].toString());
-    _deliveryType = json['deliveryType'];
-    _status = int.parse(json['status'].toString());
-    _statusName = json['statusName'];
-    _note = json['note'];
-    _pickupDate = json['pickup_date'];
-    _deliveryDate = json['delivery_date'];
-    _createdAt = json['created_at'];
-    _updatedAt = json['updated_at'];
-    _parcelDate = json['parcel_date'];
-    _parcelTime = json['parcel_time'];
-  }
-  int? _id;
-  String? _trackingId;
-  int? _merchantId;
-  String? _merchantName;
-  String? _merchantUserName;
-  String? _merchantUserEmail;
-  String? _merchantMobile;
-  String? _merchantAddress;
-  String? _customerName;
-  String? _customerPhone;
-  String? _customerAddress;
-  String? _totalDeliveryAmount;
-  String? _vatAmount;
-  String? _currentPayable;
-  String? _cashCollection;
-  int? _deliveryTypeId;
-  String? _deliveryType;
-  int? _status;
-  String? _statusName;
-  String? _note;
-  String? _pickupDate;
-  String? _deliveryDate;
-  String? _createdAt;
-  String? _updatedAt;
-  String? _parcelDate;
-  String? _parcelTime;
-
-  int? get id => _id;
-  String? get trackingId => _trackingId;
-  int? get merchantId => _merchantId;
-  String? get merchantName => _merchantName;
-  String? get merchantUserName => _merchantUserName;
-  String? get merchantUserEmail => _merchantUserEmail;
-  String? get merchantMobile => _merchantMobile;
-  String? get merchantAddress => _merchantAddress;
-  String? get customerName => _customerName;
-  String? get customerPhone => _customerPhone;
-  String? get customerAddress => _customerAddress;
-  String? get totalDeliveryAmount => _totalDeliveryAmount;
-  String? get vatAmount => _vatAmount;
-  String? get currentPayable => _currentPayable;
-  String? get cashCollection => _cashCollection;
-  int? get deliveryTypeId => _deliveryTypeId;
-  String? get deliveryType => _deliveryType;
-  int? get status => _status;
-  String? get statusName => _statusName;
-  String? get note => _note;
-  String? get pickupDate => _pickupDate;
-  String? get deliveryDate => _deliveryDate;
-  String? get createdAt => _createdAt;
-  String? get updatedAt => _updatedAt;
-  String? get parcelDate => _parcelDate;
-  String? get parcelTime => _parcelTime;
-
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['id'] = _id;
-    map['tracking_id'] = _trackingId;
-    map['merchant_id'] = _merchantId;
-    map['merchant_name'] = _merchantName;
-    map['merchant_user_name'] = _merchantUserName;
-    map['merchant_user_email'] = _merchantUserEmail;
-    map['merchant_mobile'] = _merchantMobile;
-    map['merchant_address'] = _merchantAddress;
-    map['customer_name'] = _customerName;
-    map['customer_phone'] = _customerPhone;
-    map['customer_address'] = _customerAddress;
-    map['total_delivery_amount'] = _totalDeliveryAmount;
-    map['vat_amount'] = _vatAmount;
-    map['current_payable'] = _currentPayable;
-    map['cash_collection'] = _cashCollection;
-    map['delivery_type_id'] = _deliveryTypeId;
-    map['deliveryType'] = _deliveryType;
-    map['status'] = _status;
-    map['statusName'] = _statusName;
-    map['note'] = _note;
-    map['pickup_date'] = _pickupDate;
-    map['delivery_date'] = _deliveryDate;
-    map['created_at'] = _createdAt;
-    map['updated_at'] = _updatedAt;
-    map['parcel_date'] = _parcelDate;
-    map['parcel_time'] = _parcelTime;
-    return map;
-  }
-
-}
-
-class DeliverymanAssign {
-  DeliverymanAssign({
-      int? id, 
-      String? trackingId, 
-      int? merchantId, 
-      String? merchantName, 
-      String? merchantUserName, 
-      String? merchantUserEmail, 
-      String? merchantMobile, 
-      String? merchantAddress, 
-      String? customerName, 
-      String? customerPhone, 
-      String? customerAddress, 
-      String? totalDeliveryAmount, 
-      String? vatAmount, 
-      String? currentPayable, 
-      String? cashCollection, 
-      int? deliveryTypeId, 
-      String? deliveryType, 
-      String? priorityTypeId,
-      int? status,
-      String? statusName, 
-      String? note,
-      String? pickupDate,
-      String? deliveryDate, 
-      String? createdAt, 
-      String? updatedAt, 
-      String? parcelDate, 
-      String? parcelTime,}){
-    _id = id;
-    _trackingId = trackingId;
-    _merchantId = merchantId;
-    _merchantName = merchantName;
-    _merchantUserName = merchantUserName;
-    _merchantUserEmail = merchantUserEmail;
-    _merchantMobile = merchantMobile;
-    _merchantAddress = merchantAddress;
-    _customerName = customerName;
-    _customerPhone = customerPhone;
-    _customerAddress = customerAddress;
-    _totalDeliveryAmount = totalDeliveryAmount;
-    _vatAmount = vatAmount;
-    _currentPayable = currentPayable;
-    _cashCollection = cashCollection;
-    _deliveryTypeId = deliveryTypeId;
-    _deliveryType = deliveryType;
-    _priorityTypeId = priorityTypeId;
-    _status = status;
-    _statusName = statusName;
-    _note = note;
-    _pickupDate = pickupDate;
-    _deliveryDate = deliveryDate;
-    _createdAt = createdAt;
-    _updatedAt = updatedAt;
-    _parcelDate = parcelDate;
-    _parcelTime = parcelTime;
-}
-
-  DeliverymanAssign.fromJson(dynamic json) {
-    _id = json['id'];
-    _trackingId = json['tracking_id'];
-    _merchantId = int.parse(json['merchant_id'].toString());
-    _merchantName = json['merchant_name'];
-    _merchantUserName = json['merchant_user_name'];
-    _merchantUserEmail = json['merchant_user_email'];
-    _merchantMobile = json['merchant_mobile'];
-    _merchantAddress = json['merchant_address'];
-    _customerName = json['customer_name'];
-    _customerPhone = json['customer_phone'];
-    _customerAddress = json['customer_address'];
-    _totalDeliveryAmount = json['total_delivery_amount'];
-    _vatAmount = json['vat_amount'];
-    _currentPayable = json['current_payable'];
-    _cashCollection = json['cash_collection'];
-    _deliveryTypeId = int.parse(json['delivery_type_id'].toString());
-    _deliveryType = json['deliveryType'];
-    _priorityTypeId = json['priorityTypeId'];
-    _status = int.parse(json['status'].toString());
-    _statusName = json['statusName'];
-    _note = json['note'];
-    _pickupDate = json['pickup_date'];
-    _deliveryDate = json['delivery_date'];
-    _createdAt = json['created_at'];
-    _updatedAt = json['updated_at'];
-    _parcelDate = json['parcel_date'];
-    _parcelTime = json['parcel_time'];
-  }
-  int? _id;
-  String? _trackingId;
-  int? _merchantId;
-  String? _merchantName;
-  String? _merchantUserName;
-  String? _merchantUserEmail;
-  String? _merchantMobile;
-  String? _merchantAddress;
-  String? _customerName;
-  String? _customerPhone;
-  String? _customerAddress;
-  String? _totalDeliveryAmount;
-  String? _vatAmount;
-  String? _currentPayable;
-  String? _cashCollection;
-  int? _deliveryTypeId;
-  String? _deliveryType;
-  String? _priorityTypeId;
-  int? _status;
-  String? _statusName;
-  String? _note;
-  String? _pickupDate;
-  String? _deliveryDate;
-  String? _createdAt;
-  String? _updatedAt;
-  String? _parcelDate;
-  String? _parcelTime;
-
-  int? get id => _id;
-  String? get trackingId => _trackingId;
-  int? get merchantId => _merchantId;
-  String? get merchantName => _merchantName;
-  String? get merchantUserName => _merchantUserName;
-  String? get merchantUserEmail => _merchantUserEmail;
-  String? get merchantMobile => _merchantMobile;
-  String? get merchantAddress => _merchantAddress;
-  String? get customerName => _customerName;
-  String? get customerPhone => _customerPhone;
-  String? get customerAddress => _customerAddress;
-  String? get totalDeliveryAmount => _totalDeliveryAmount;
-  String? get vatAmount => _vatAmount;
-  String? get currentPayable => _currentPayable;
-  String? get cashCollection => _cashCollection;
-  String? get priorityTypeId => _priorityTypeId;
-  int? get deliveryTypeId => _deliveryTypeId;
-  String? get deliveryType => _deliveryType;
-  int? get status => _status;
-  String? get statusName => _statusName;
-  String? get note => _note;
-  String? get pickupDate => _pickupDate;
-  String? get deliveryDate => _deliveryDate;
-  String? get createdAt => _createdAt;
-  String? get updatedAt => _updatedAt;
-  String? get parcelDate => _parcelDate;
-  String? get parcelTime => _parcelTime;
-
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['id'] = _id;
-    map['tracking_id'] = _trackingId;
-    map['merchant_id'] = _merchantId;
-    map['merchant_name'] = _merchantName;
-    map['merchant_user_name'] = _merchantUserName;
-    map['merchant_user_email'] = _merchantUserEmail;
-    map['merchant_mobile'] = _merchantMobile;
-    map['merchant_address'] = _merchantAddress;
-    map['customer_name'] = _customerName;
-    map['customer_phone'] = _customerPhone;
-    map['customer_address'] = _customerAddress;
-    map['total_delivery_amount'] = _totalDeliveryAmount;
-    map['vat_amount'] = _vatAmount;
-    map['current_payable'] = _currentPayable;
-    map['cash_collection'] = _cashCollection;
-    map['delivery_type_id'] = _deliveryTypeId;
-    map['priorityTypeId'] = priorityTypeId;
-    map['deliveryType'] = _deliveryType;
-    map['status'] = _status;
-    map['statusName'] = _statusName;
-    map['note'] = _note;
-    map['pickup_date'] = _pickupDate;
-    map['delivery_date'] = _deliveryDate;
-    map['created_at'] = _createdAt;
-    map['updated_at'] = _updatedAt;
-    map['parcel_date'] = _parcelDate;
-    map['parcel_time'] = _parcelTime;
-    return map;
-  }
-
-}
-
-class ReturnToCourier {
-  ReturnToCourier({
-      int? id,
-      String? trackingId,
-      int? merchantId,
-      String? merchantName,
-      String? merchantUserName,
-      String? merchantUserEmail,
-      String? merchantMobile,
-      String? merchantAddress,
-      String? customerName,
-      String? customerPhone,
-      String? customerAddress,
-      String? totalDeliveryAmount,
-      String? vatAmount,
-      String? currentPayable,
-      String? cashCollection,
-      int? deliveryTypeId,
-      String? deliveryType,
-      int? status,
-      String? statusName,
-      String? note,
-      String? pickupDate,
-      String? deliveryDate,
-      String? createdAt,
-      String? updatedAt,
-      String? parcelDate,
-      String? parcelTime,}){
-    _id = id;
-    _trackingId = trackingId;
-    _merchantId = merchantId;
-    _merchantName = merchantName;
-    _merchantUserName = merchantUserName;
-    _merchantUserEmail = merchantUserEmail;
-    _merchantMobile = merchantMobile;
-    _merchantAddress = merchantAddress;
-    _customerName = customerName;
-    _customerPhone = customerPhone;
-    _customerAddress = customerAddress;
-    _totalDeliveryAmount = totalDeliveryAmount;
-    _vatAmount = vatAmount;
-    _currentPayable = currentPayable;
-    _cashCollection = cashCollection;
-    _deliveryTypeId = deliveryTypeId;
-    _deliveryType = deliveryType;
-    _status = status;
-    _statusName = statusName;
-    _note = note;
-    _pickupDate = pickupDate;
-    _deliveryDate = deliveryDate;
-    _createdAt = createdAt;
-    _updatedAt = updatedAt;
-    _parcelDate = parcelDate;
-    _parcelTime = parcelTime;
-}
-
-  ReturnToCourier.fromJson(dynamic json) {
-    _id = json['id'];
-    _trackingId = json['tracking_id'];
-    _merchantId = int.parse(json['merchant_id'].toString());
-    _merchantName = json['merchant_name'];
-    _merchantUserName = json['merchant_user_name'];
-    _merchantUserEmail = json['merchant_user_email'];
-    _merchantMobile = json['merchant_mobile'];
-    _merchantAddress = json['merchant_address'];
-    _customerName = json['customer_name'];
-    _customerPhone = json['customer_phone'];
-    _customerAddress = json['customer_address'];
-    _totalDeliveryAmount = json['total_delivery_amount'];
-    _vatAmount = json['vat_amount'];
-    _currentPayable = json['current_payable'];
-    _cashCollection = json['cash_collection'];
-    _deliveryTypeId = int.parse(json['delivery_type_id'].toString());
-    _deliveryType = json['deliveryType'];
-    _status = int.parse(json['status'].toString());
-    _statusName = json['statusName'];
-    _note = json['note'];
-    _pickupDate = json['pickup_date'];
-    _deliveryDate = json['delivery_date'];
-    _createdAt = json['created_at'];
-    _updatedAt = json['updated_at'];
-    _parcelDate = json['parcel_date'];
-    _parcelTime = json['parcel_time'];
-  }
-  int? _id;
-  String? _trackingId;
-  int? _merchantId;
-  String? _merchantName;
-  String? _merchantUserName;
-  String? _merchantUserEmail;
-  String? _merchantMobile;
-  String? _merchantAddress;
-  String? _customerName;
-  String? _customerPhone;
-  String? _customerAddress;
-  String? _totalDeliveryAmount;
-  String? _vatAmount;
-  String? _currentPayable;
-  String? _cashCollection;
-  int? _deliveryTypeId;
-  String? _deliveryType;
-  int? _status;
-  String? _statusName;
-  String? _note;
-  String? _pickupDate;
-  String? _deliveryDate;
-  String? _createdAt;
-  String? _updatedAt;
-  String? _parcelDate;
-  String? _parcelTime;
-
-  int? get id => _id;
-  String? get trackingId => _trackingId;
-  int? get merchantId => _merchantId;
-  String? get merchantName => _merchantName;
-  String? get merchantUserName => _merchantUserName;
-  String? get merchantUserEmail => _merchantUserEmail;
-  String? get merchantMobile => _merchantMobile;
-  String? get merchantAddress => _merchantAddress;
-  String? get customerName => _customerName;
-  String? get customerPhone => _customerPhone;
-  String? get customerAddress => _customerAddress;
-  String? get totalDeliveryAmount => _totalDeliveryAmount;
-  String? get vatAmount => _vatAmount;
-  String? get currentPayable => _currentPayable;
-  String? get cashCollection => _cashCollection;
-  int? get deliveryTypeId => _deliveryTypeId;
-  String? get deliveryType => _deliveryType;
-  int? get status => _status;
-  String? get statusName => _statusName;
-  String? get  note => _note;
-  String? get pickupDate => _pickupDate;
-  String? get deliveryDate => _deliveryDate;
-  String? get createdAt => _createdAt;
-  String? get updatedAt => _updatedAt;
-  String? get parcelDate => _parcelDate;
-  String? get parcelTime => _parcelTime;
-
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['id'] = _id;
-    map['tracking_id'] = _trackingId;
-    map['merchant_id'] = _merchantId;
-    map['merchant_name'] = _merchantName;
-    map['merchant_user_name'] = _merchantUserName;
-    map['merchant_user_email'] = _merchantUserEmail;
-    map['merchant_mobile'] = _merchantMobile;
-    map['merchant_address'] = _merchantAddress;
-    map['customer_name'] = _customerName;
-    map['customer_phone'] = _customerPhone;
-    map['customer_address'] = _customerAddress;
-    map['total_delivery_amount'] = _totalDeliveryAmount;
-    map['vat_amount'] = _vatAmount;
-    map['current_payable'] = _currentPayable;
-    map['cash_collection'] = _cashCollection;
-    map['delivery_type_id'] = _deliveryTypeId;
-    map['deliveryType'] = _deliveryType;
-    map['status'] = _status;
-    map['statusName'] = _statusName;
-    map['note'] = _note;
-    map['pickup_date'] = _pickupDate;
-    map['delivery_date'] = _deliveryDate;
-    map['created_at'] = _createdAt;
-    map['updated_at'] = _updatedAt;
-    map['parcel_date'] = _parcelDate;
-    map['parcel_time'] = _parcelTime;
-    return map;
-  }
-
 }

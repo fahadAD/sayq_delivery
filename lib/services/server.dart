@@ -125,6 +125,7 @@ class Server {
       'Authorization': bearerToken!,
       'apiKey': APIList.apiCheckKey!,
       'Content-Type': 'multipart/form-data',
+      'accept': "application/json",
     };
     HttpClient client = HttpClient();
     try {

@@ -1,12 +1,13 @@
 class ProfileModel {
   ProfileModel({
-      bool? success, 
-      String? message, 
-      ProfileData? data,}){
+    bool? success,
+    String? message,
+    ProfileData? data,
+  }) {
     _success = success;
     _message = message;
     _data = data;
-}
+  }
 
   ProfileModel.fromJson(dynamic json) {
     _success = json['success'];
@@ -30,18 +31,18 @@ class ProfileModel {
     }
     return map;
   }
-
 }
 
 class ProfileData {
   ProfileData({
-      User? user, 
-      String? currentBalance, 
-      int? deliverymanEarn, 
-      String? totalCod, 
-      int? deliveryInProgress, 
-      int? completedDelivered, 
-      int? canceledDelivered,}){
+    User? user,
+    String? currentBalance,
+    dynamic deliverymanEarn,
+    String? totalCod,
+    int? deliveryInProgress,
+    int? completedDelivered,
+    int? canceledDelivered,
+  }) {
     _user = user;
     _currentBalance = currentBalance;
     _deliverymanEarn = deliverymanEarn;
@@ -49,7 +50,7 @@ class ProfileData {
     _deliveryInProgress = deliveryInProgress;
     _completedDelivered = completedDelivered;
     _canceledDelivered = canceledDelivered;
-}
+  }
 
   ProfileData.fromJson(dynamic json) {
     _user = json['user'] != null ? User.fromJson(json['user']) : null;
@@ -62,7 +63,7 @@ class ProfileData {
   }
   User? _user;
   String? _currentBalance;
-  int? _deliverymanEarn;
+  dynamic _deliverymanEarn;
   String? _totalCod;
   int? _deliveryInProgress;
   int? _completedDelivered;
@@ -70,7 +71,7 @@ class ProfileData {
 
   User? get user => _user;
   String? get currentBalance => _currentBalance;
-  int? get deliverymanEarn => _deliverymanEarn;
+  dynamic get deliverymanEarn => _deliverymanEarn;
   String? get totalCod => _totalCod;
   int? get deliveryInProgress => _deliveryInProgress;
   int? get completedDelivered => _completedDelivered;
@@ -89,25 +90,25 @@ class ProfileData {
     map['canceled_delivered'] = _canceledDelivered;
     return map;
   }
-
 }
 
 class User {
   User({
-      int? id, 
-      String? name, 
-      String? email, 
-      String? phone,
+    int? id,
+    String? name,
+    String? email,
+    String? phone,
     String? userType,
-      Deliveryman? deliveryman, 
-      Hub? hub, 
-      String? address, 
-      String? salary,
+    Deliveryman? deliveryman,
+    Hub? hub,
+    String? address,
+    String? salary,
     String? status,
-      String? statusName, 
-      String? image, 
-      String? createdAt, 
-      String? updatedAt,}){
+    String? statusName,
+    String? image,
+    String? createdAt,
+    String? updatedAt,
+  }) {
     _id = id;
     _name = name;
     _email = email;
@@ -122,7 +123,7 @@ class User {
     _image = image;
     _createdAt = createdAt;
     _updatedAt = updatedAt;
-}
+  }
 
   User.fromJson(dynamic json) {
     _id = json['id'];
@@ -192,19 +193,19 @@ class User {
     map['updated_at'] = _updatedAt;
     return map;
   }
-
 }
 
 class Hub {
   Hub({
-      int? id, 
-      String? name, 
-      String? phone, 
-      String? address, 
-      String? currentBalance, 
-      int? status, 
-      String? createdAt, 
-      String? updatedAt,}){
+    int? id,
+    String? name,
+    String? phone,
+    String? address,
+    String? currentBalance,
+    int? status,
+    String? createdAt,
+    String? updatedAt,
+  }) {
     _id = id;
     _name = name;
     _phone = phone;
@@ -213,7 +214,7 @@ class Hub {
     _status = status;
     _createdAt = createdAt;
     _updatedAt = updatedAt;
-}
+  }
 
   Hub.fromJson(dynamic json) {
     _id = json['id'];
@@ -255,22 +256,22 @@ class Hub {
     map['updated_at'] = _updatedAt;
     return map;
   }
-
 }
 
 class Deliveryman {
   Deliveryman({
-      int? id, 
-      int? userId, 
-      int? status, 
-      String? deliveryCharge, 
-      String? pickupCharge, 
-      String? returnCharge, 
-      String? currentBalance, 
-      String? openingBalance, 
-      int? drivingLicenseImageId, 
-      String? createdAt, 
-      String? updatedAt,}){
+    int? id,
+    int? userId,
+    int? status,
+    String? deliveryCharge,
+    String? pickupCharge,
+    String? returnCharge,
+    String? currentBalance,
+    String? openingBalance,
+    int? drivingLicenseImageId,
+    String? createdAt,
+    String? updatedAt,
+  }) {
     _id = id;
     _userId = userId;
     _status = status;
@@ -281,7 +282,7 @@ class Deliveryman {
     _openingBalance = openingBalance;
     _createdAt = createdAt;
     _updatedAt = updatedAt;
-}
+  }
 
   Deliveryman.fromJson(dynamic json) {
     _id = json['id'];
@@ -331,5 +332,4 @@ class Deliveryman {
     map['updated_at'] = _updatedAt;
     return map;
   }
-
 }

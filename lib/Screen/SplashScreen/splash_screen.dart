@@ -19,14 +19,11 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-
   final AuthController _authController = AuthController();
 
   @override
   void initState() {
-    FirebaseMessaging.instance
-        .getInitialMessage()
-        .then((RemoteMessage? message) {});
+    FirebaseMessaging.instance.getInitialMessage().then((RemoteMessage? message) {});
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {});
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {});
     FirebaseMessaging.instance.getToken().then((token) {
@@ -34,8 +31,8 @@ class _SplashScreenState extends State<SplashScreen> {
     });
     Timer(
       const Duration(seconds: 2),
-          () => {
-        logInCheck(),
+      () {
+        logInCheck();
       },
     );
     super.initState();
@@ -50,23 +47,20 @@ class _SplashScreenState extends State<SplashScreen> {
 
   logInCheck() async {
     if (Get.find<GlobalController>().isUser) {
-       _authController.refreshToken(context);
+      _authController.refreshToken(context);
     } else {
       Get.off(() => const SignIn());
     }
   }
 
-
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: kMainColor,
+      backgroundColor: Color(0xFFFFFFFF),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
-        children:  [
+        children: [
           Center(
             child: Image(
               image: AssetImage(Images.appLogo),
