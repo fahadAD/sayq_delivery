@@ -5,6 +5,7 @@ import '/services/api-list.dart';
 import '/services/server.dart';
 import '/services/user-service.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 
 class DashboardController extends GetxController {
   UserService userService = UserService();
@@ -69,15 +70,18 @@ class DashboardController extends GetxController {
     };
 
     print("bodys=======${body}");
+    // String jsonbody = jsonEncode(body);
 
     try {
       var response = await server.multipartFileRequest(endPoint: APIList.changeStatus, body: body, filepath: image, pickedSignatureImage: pickedSignatureImage, type: true);
       print("======fahad====${response}+++++++++++++");
+      print(response is String);
+      print(response.runtimeType);
       // print("=====fahad=====${response.statusCode}+++++++++++++++");
-      //print("====fahad======${response.body}+++++++++++");
-
-      if (response != null) {
-        var data = jsonDecode(response.body);
+      // print("====fahad======${response.body}+++++++++++");
+      var data = jsonDecode(response as String);
+      if (data != null) {
+        // var data = jsonDecode(response.body);
 
         print("=====datasdddd=====${data}+++++++++++++");
 
@@ -120,6 +124,9 @@ class DashboardController extends GetxController {
     try {
       var response = await server.postRequestWithToken(endPoint: APIList.changeStatus, body: jsonbody);
       print(response.statusCode);
+      print(response is String);
+      print(response is http.Response);
+      print(response.runtimeType);
       print("======fahad====${response}+++++++++++++");
       print("=====fahad=====${response.statusCode}+++++++++++++++");
       print("====fahad======${response.body}+++++++++++");

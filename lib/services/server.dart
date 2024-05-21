@@ -124,7 +124,7 @@ class Server {
     Map<String, String> headers = {
       'Authorization': bearerToken!,
       'apiKey': APIList.apiCheckKey!,
-      'Content-Type': 'multipart/form-data',
+      'Content-Type': 'application/json',
       'accept': "application/json",
     };
     HttpClient client = HttpClient();
